@@ -11,6 +11,8 @@ TagManager:
   - Field
   - AttackerField
   - DefenderField
+  - AttackerFence
+  - DefenderFence
   layers:
   - Default
   - TransparentFX

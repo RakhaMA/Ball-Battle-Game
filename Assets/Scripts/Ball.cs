@@ -7,6 +7,9 @@ public class Ball : MonoBehaviour
     [SerializeField] private Transform fieldPlane; // for checking if the ball is within the field
     [SerializeField] private Transform attackerField; // the field where the ball is spawned
     [SerializeField] private float speed = 1.5f;
+    [SerializeField] private Transform attacker;
+
+    public bool isHeld = false;
 
 
     private void Awake()
@@ -21,7 +24,35 @@ public class Ball : MonoBehaviour
 
     private void Update()
     {
+        // check if the ball is being held
+        if (isHeld)
+        {
+            // move the ball with the attacker
+            MoveBallWithAttacker(attacker);
+        }
+        // else
+        // {
+        //     // check if the ball is within the field
+        //     if (!fieldPlane.GetComponent<MeshCollider>().bounds.Contains(transform.position))
+        //     {
+        //         // if the ball is out of the field, spawn it again
+        //         SpawnBall();
+        //     }
+        // }
+
         
+    }
+
+    public void GetAttackerPosition(Transform attacker)
+    {
+        // get the attacker's position
+        this.attacker = attacker;
+    }
+
+    public void MoveBallWithAttacker(Transform attacker)
+    {
+        // move the ball with the attacker
+        transform.position = attacker.position;
     }
 
     private void Start()

@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Soldier : MonoBehaviour
 {
     public float speed;
+    public float spawnTime;
     public float reactivateTime;
     public bool isActive = false;
 
@@ -21,6 +22,11 @@ public abstract class Soldier : MonoBehaviour
         isActive = false;
         // Logic for deactivation (e.g., change visuals to greyscale, stop movement)
         Invoke(nameof(Reactivate), reactivateTime);
+    }
+
+    public virtual void SpawnTime()
+    {
+        Invoke(nameof(Activate), spawnTime);
     }
 
     private void Reactivate()
