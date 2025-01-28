@@ -16,6 +16,7 @@ TagManager:
   - DefenderGate
   - Attacker
   - Defender
+  - FieldArea
   layers:
   - Default
   - TransparentFX

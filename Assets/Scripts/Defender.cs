@@ -34,6 +34,7 @@ public class Defender : Soldier
                 Attacker attacker = target.GetComponentInParent<Attacker>();
                 if (attacker != null)
                 {
+                    attacker.PassBallToNearestAttacker();
                     attacker.Deactivate();
                     Deactivate();
                     target = null; // Clear the target after catching

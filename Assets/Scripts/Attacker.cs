@@ -95,9 +95,34 @@ public class Attacker : Soldier
     //     }
     // }
 
-    private void PassBallToNearestAttacker()
+    public void PassBallToNearestAttacker()
     {
-        // Logic to find the nearest attacker and pass the ball
+        // Find the nearest active attacker
+        Attacker[] attackers = FindObjectsOfType<Attacker>();
+        Attacker nearestAttacker = null;
+        float minDistance = float.MaxValue;
+        foreach (var attacker in attackers)
+        {
+            if (attacker.isActive && attacker != this)
+            {
+                float distance = Vector3.Distance(transform.position, attacker.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestAttacker = attacker;
+                }
+            }
+        }
+
+        if (nearestAttacker != null)
+        {
+            Debug.Log("Passing the ball to the nearest attacker");
+            // Pass the ball to the nearest attacker
+            hasBall = false;
+            ballScript.isHeld = false;
+            ballScript.UpdateAttacker(nearestAttacker.transform);
+            
+        }
     }
 }
 

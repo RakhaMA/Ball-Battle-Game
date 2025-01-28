@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    [SerializeField] private Transform fieldPlane; // for checking if the ball is within the field
+    [SerializeField] private Collider fieldPlane; // the field area
     [SerializeField] private Transform attackerField; // the field where the ball is spawned
     [SerializeField] private float speed = 1.5f;
     [SerializeField] private Transform attacker;
@@ -15,7 +15,7 @@ public class Ball : MonoBehaviour
     private void Awake()
     {
         // get the field area
-        fieldPlane = GameObject.FindGameObjectWithTag("Field").transform;
+        fieldPlane = GameObject.FindGameObjectWithTag("FieldArea").GetComponent<Collider>();
 
         // get the attacking field
         attackerField = GameObject.FindGameObjectWithTag("AttackerField").transform;
@@ -30,17 +30,25 @@ public class Ball : MonoBehaviour
             // move the ball with the attacker
             MoveBallWithAttacker(attacker);
         }
-        // else
-        // {
-        //     // check if the ball is within the field
-        //     if (!fieldPlane.GetComponent<MeshCollider>().bounds.Contains(transform.position))
-        //     {
-        //         // if the ball is out of the field, spawn it again
-        //         SpawnBall();
-        //     }
-        // }
+        else
+        {
+            if (attacker != null)
+            {
+                // move the ball to the nearest attacker
+                MoveBallToNearestAttacker(attacker);
+            }
+        }
+    }
 
-        
+    private void OnTriggerExit(Collider other)
+    {
+        // check if the ball is out of the field
+        if (other.CompareTag("FieldArea"))
+        {
+            Debug.Log("Ball is out of the field!");
+            // respawn the ball
+            SpawnBall();
+        }
     }
 
     public void GetAttackerPosition(Transform attacker)
@@ -49,10 +57,23 @@ public class Ball : MonoBehaviour
         this.attacker = attacker;
     }
 
+    public void UpdateAttacker(Transform attacker)
+    {
+        // update the attacker
+        this.attacker = attacker;
+    }
+
     public void MoveBallWithAttacker(Transform attacker)
     {
         // move the ball with the attacker
         transform.position = attacker.position;
+    }
+
+    // move ball to the nearest attacker with the ball speed
+    public void MoveBallToNearestAttacker(Transform attacker)
+    {
+        // move the ball to the attacker
+        transform.position = Vector3.MoveTowards(transform.position, attacker.position, speed * Time.deltaTime);
     }
 
     private void Start()
