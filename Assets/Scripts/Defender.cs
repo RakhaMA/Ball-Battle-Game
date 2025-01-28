@@ -7,6 +7,11 @@ public class Defender : Soldier
     public float detectionRange;
     private Transform target;
 
+    private void Start()
+    {
+        SpawnTime();
+    }
+
     private void Update()
     {
         if (isActive)
@@ -25,9 +30,19 @@ public class Defender : Soldier
             // Check if the target is within reach
             if (Vector3.Distance(transform.position, target.position) < 1.0f)
             {
-                // Catch the attacker
-                target.GetComponent<Attacker>().Deactivate();
-                Deactivate();
+                Debug.Log("Defender caught target: " + target.name);
+                Attacker attacker = target.GetComponentInParent<Attacker>();
+                if (attacker != null)
+                {
+                    attacker.Deactivate();
+                    Deactivate();
+                    target = null; // Clear the target after catching
+                }
+                else
+                {
+                    Debug.LogWarning("Attacker component is missing from target!");
+                    target = null; // Clear the target to avoid further processing
+                }
             }
         }
         else
@@ -37,18 +52,28 @@ public class Defender : Soldier
         }
     }
 
+
     private void LookForTarget()
     {
         // Detect attackers within range
         Collider[] hits = Physics.OverlapSphere(transform.position, detectionRange);
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("Attacker") && hit.GetComponent<Attacker>().isActive)
+            if (hit.CompareTag("Attacker") && hit.GetComponentInParent<Attacker>().hasBall)
             {
                 target = hit.transform;
+                
+                Debug.Log("target: " + target);
                 break;
             }
         }
+    }
+
+    // draw gizmos for detection range
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 }
 

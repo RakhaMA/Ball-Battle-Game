@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Gate
   - Ball
   - Attacker Soldier
   - Defender Soldier
@@ -13,6 +12,10 @@ TagManager:
   - DefenderField
   - AttackerFence
   - DefenderFence
+  - AttackerGate
+  - DefenderGate
+  - Attacker
+  - Defender
   layers:
   - Default
   - TransparentFX
