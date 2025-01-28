@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 264047123, guid: 452c978ec3975024baf2763592e8f53c, type: 3}
+      propertyPath: m_TagString
+      value: Attacker
+      objectReference: {fileID: 0}
     - target: {fileID: 5941471922079776381, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}
       propertyPath: m_Name
@@ -15,7 +19,7 @@ PrefabInstance:
     - target: {fileID: 5941471922079776381, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}
       propertyPath: m_TagString
-      value: Attacker Soldier
+      value: Attacker
       objectReference: {fileID: 0}
     - target: {fileID: 6431010075685807303, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}

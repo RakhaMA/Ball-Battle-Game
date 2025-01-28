@@ -129,4 +129,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fieldPlane: {fileID: 0}
   attackerField: {fileID: 0}
-  speed: 1.5
+  speed: 10
+  attacker: {fileID: 0}
+  isHeld: 0

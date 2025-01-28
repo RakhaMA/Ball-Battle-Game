@@ -32,11 +32,7 @@ public class Ball : MonoBehaviour
         }
         else
         {
-            if (attacker != null)
-            {
-                // move the ball to the nearest attacker
-                MoveBallToNearestAttacker(attacker);
-            }
+            return;
         }
     }
 
@@ -73,7 +69,36 @@ public class Ball : MonoBehaviour
     public void MoveBallToNearestAttacker(Transform attacker)
     {
         // move the ball to the attacker
-        transform.position = Vector3.MoveTowards(transform.position, attacker.position, speed * Time.deltaTime);
+        StartCoroutine(MoveBallParabolically(attacker.position, 2.0f)); // 2.0f is the arc height
+    }
+
+    private IEnumerator MoveBallParabolically(Vector3 targetPosition, float arcHeight)
+    {
+        Vector3 startPosition = transform.position; // Initial position of the ball
+        float distance = Vector3.Distance(startPosition, targetPosition);
+        float elapsedTime = 0f;
+        float duration = distance / speed; // Calculate total time based on speed
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration); // Normalized time (0 to 1)
+
+            // Interpolate horizontally
+            Vector3 horizontalPosition = Vector3.Lerp(startPosition, targetPosition, t);
+
+            // Add parabolic height
+            float height = Mathf.Sin(Mathf.PI * t) * arcHeight; // Creates the arc
+            transform.position = new Vector3(horizontalPosition.x, horizontalPosition.y + height, horizontalPosition.z);
+
+            yield return null; // Wait for the next frame
+        }
+
+        // Snap the ball to the target position at the end
+        transform.position = targetPosition;
+
+        // Notify the attacker that the ball has arrived
+        Debug.Log("Ball reached attacker: " + attacker.name);
     }
 
     private void Start()

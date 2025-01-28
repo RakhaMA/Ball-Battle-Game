@@ -121,6 +121,7 @@ public class Attacker : Soldier
             hasBall = false;
             ballScript.isHeld = false;
             ballScript.UpdateAttacker(nearestAttacker.transform);
+            ballScript.MoveBallToNearestAttacker(nearestAttacker.transform);
             
         }
     }

@@ -7,10 +7,19 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 264047123, guid: 452c978ec3975024baf2763592e8f53c, type: 3}
+      propertyPath: m_TagString
+      value: Defender
+      objectReference: {fileID: 0}
     - target: {fileID: 5941471922079776381, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}
       propertyPath: m_Name
       value: Soldier_Defender
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941471922079776381, guid: 452c978ec3975024baf2763592e8f53c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Defender
       objectReference: {fileID: 0}
     - target: {fileID: 6431010075685807303, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}
@@ -20,7 +29,7 @@ PrefabInstance:
     - target: {fileID: 6431010075685807303, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -18.47
       objectReference: {fileID: 0}
     - target: {fileID: 6431010075685807303, guid: 452c978ec3975024baf2763592e8f53c,
         type: 3}
@@ -69,3 +78,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 452c978ec3975024baf2763592e8f53c, type: 3}
+--- !u!1 &5436392693563915540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5941471922079776381, guid: 452c978ec3975024baf2763592e8f53c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1803035663795372905}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1910775720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5436392693563915540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce25d9a0b87c6564ca2069bfdc556323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 3
+  spawnTime: 0.5
+  reactivateTime: 4
+  isActive: 0
+  detectionRange: 10
