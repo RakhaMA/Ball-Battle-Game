@@ -1,96 +1,109 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public int totalMatches = 5;
-    public float matchTime = 140f;
-    private int currentMatch = 1;
-    private float timer;
+    public static GameManager Instance;
+    [SerializeField] private float matchDuration = 60.0f;
+    [SerializeField] private float timeRemaining;
+    public bool isMatchActive = false;
+    [SerializeField] private bool isAttacker = true;
 
-    public int playerScore = 0;
-    public int enemyScore = 0;
+    public TextMeshProUGUI timerText;
+    public GameObject countdownPanel;
+    public TextMeshProUGUI countdownText;
 
-    public Ball ball; // Reference to the Ball object
-    public Transform playerField; // Reference to the player's field
-    public Transform enemyField; // Reference to the enemy's field
+    public GameObject attackerWinPanel;
+    public GameObject defenderWinPanel;
 
-    private bool isPlayerAttacking = true;
+    private Spawner spawner;
 
-    void Start()
+    private void Awake()
     {
-        StartMatch();
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Update()
+    private void Start()
     {
-        timer -= Time.deltaTime;
-        if (timer <= 0)
+        spawner = GetComponent<Spawner>();
+
+        StartCoroutine(CountdownToMatch());
+    }
+
+    private void Update()
+    {
+        if (isMatchActive)
         {
-            EndMatch();
+            timeRemaining -= Time.deltaTime;
+            timerText.text = timeRemaining.ToString("F1");
+            if (timeRemaining <= 0)
+            {
+                // defender wins if time runs out
+                OnDefenderWin();
+            }
         }
     }
 
     private void StartMatch()
     {
-        Debug.Log("Starting Match " + currentMatch);
-        timer = matchTime;
+        attackerWinPanel.SetActive(false);
+        defenderWinPanel.SetActive(false);
+        timeRemaining = matchDuration;
+        spawner.ResetEnergy();
+        spawner.energyBar.StartEnergyRecharge();
 
-        // Alternate roles
-        isPlayerAttacking = currentMatch % 2 != 0;
-
-        // Reset ball position
-        //ball.attackingField = isPlayerAttacking ? playerField : enemyField;
-        //ball.SpawnBall();
-
-        // Reset soldiers (optional: add reset logic for soldiers)
+        isMatchActive = true;
+        spawner.isAttacker = isAttacker;
     }
 
-    private void EndMatch()
+    public void EndMatch()
     {
-        Debug.Log("Match " + currentMatch + " ended!");
-        currentMatch++;
-
-        if (currentMatch > totalMatches)
-        {
-            EndGame();
-        }
-        else
-        {
-            StartMatch();
-        }
+        isMatchActive = false;
+        timeRemaining = matchDuration;
+        spawner.ResetEnergy();
     }
 
-    private void EndGame()
+    IEnumerator CountdownToMatch()
     {
-        Debug.Log("Game Over!");
-        if (playerScore > enemyScore)
+        countdownPanel.SetActive(true);
+        int count = 3;
+        while (count > 0)
         {
-            Debug.Log("Player Wins!");
+            countdownText.text = count.ToString();
+            yield return new WaitForSeconds(1);
+            count--;
         }
-        else if (playerScore < enemyScore)
-        {
-            Debug.Log("Enemy Wins!");
-        }
-        else
-        {
-            Debug.Log("It's a Draw!");
-            // Optional: Trigger Penalty Maze Mode
-        }
+        countdownText.text = "GO!";
+        yield return new WaitForSeconds(1);
+        countdownPanel.SetActive(false);
+        StartMatch();
+    }
+
+    public void StartCountdownMatch()
+    {
+        attackerWinPanel.SetActive(false);
+        defenderWinPanel.SetActive(false);
+        StartCoroutine(CountdownToMatch());
     }
 
     public void OnAttackerWin()
     {
-        playerScore++;
-        Debug.Log("Player Scored! Current Score: " + playerScore);
+        attackerWinPanel.SetActive(true);
         EndMatch();
     }
 
     public void OnDefenderWin()
     {
-        enemyScore++;
-        Debug.Log("Enemy Scored! Current Score: " + enemyScore);
+        defenderWinPanel.SetActive(true);
         EndMatch();
     }
 }

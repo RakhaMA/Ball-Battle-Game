@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private EnergyBar energyBar;
+    public EnergyBar energyBar;
     [SerializeField] private GameObject attackerPrefab;
     [SerializeField] private GameObject defenderPrefab;
     [SerializeField] private LayerMask fieldLayerMask;
-    [SerializeField] private bool isAttacker = true;
+    public bool isAttacker = true;
 
     private Camera mainCamera;
 
@@ -19,7 +19,7 @@ public class Spawner : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && energyBar.CanUseEnergy(isAttacker))
+        if (Input.GetMouseButtonDown(0) && energyBar.CanUseEnergy(isAttacker) && GameManager.Instance.isMatchActive)
         {
             SpawnSoldierAtClick();
             energyBar.UseEnergy(isAttacker);
@@ -48,5 +48,10 @@ public class Spawner : MonoBehaviour
 
             Debug.Log($"Spawned {(isAttacker ? "Attacker" : "Defender")} at {spawnPosition}");
         }
+    }
+
+    public void ResetEnergy()
+    {
+        energyBar.ResetEnergy();
     }
 }

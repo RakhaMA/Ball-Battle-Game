@@ -9,28 +9,28 @@ public class Gate : MonoBehaviour
     public GameManager gameManager; // Reference to the game manager
     public ParticleSystem scoreEffect; // Particle effect for scoring
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Ball"))
-        {
-            Debug.Log(isEnemyGate ? "Attacker wins!" : "Defender wins!");
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.CompareTag("Ball"))
+    //     {
+    //         Debug.Log(isEnemyGate ? "Attacker wins!" : "Defender wins!");
             
-            // Play particle effect
-            if (scoreEffect != null)
-            {
-                scoreEffect.Play();
-            }
+    //         // Play particle effect
+    //         if (scoreEffect != null)
+    //         {
+    //             scoreEffect.Play();
+    //         }
 
-            // Notify the game manager about the result
-            if (isEnemyGate)
-            {
-                gameManager.OnAttackerWin();
-            }
-            else
-            {
-                gameManager.OnDefenderWin();
-            }
-        }
-    }
+    //         // Notify the game manager about the result
+    //         if (isEnemyGate)
+    //         {
+    //             gameManager.OnAttackerWin();
+    //         }
+    //         else
+    //         {
+    //             gameManager.OnDefenderWin();
+    //         }
+    //     }
+    // }
 }
 

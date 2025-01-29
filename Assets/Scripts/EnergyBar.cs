@@ -15,8 +15,6 @@ public class EnergyBar : MonoBehaviour
     private void Start()
     {
         InitializeEnergyBars();
-        StartCoroutine(RechargeEnergy(energyBarAttacker)); // Start attacker energy recharge
-        StartCoroutine(RechargeEnergy(energyBarDefender)); // Start defender energy recharge
     }
 
     private void Update()
@@ -32,6 +30,12 @@ public class EnergyBar : MonoBehaviour
         {
             UseEnergy(energyBarDefender);
         }
+    }
+
+    public void StartEnergyRecharge()
+    {
+        StartCoroutine(RechargeEnergy(energyBarAttacker)); // Start attacker energy recharge
+        StartCoroutine(RechargeEnergy(energyBarDefender)); // Start defender energy recharge
     }
 
     private void InitializeEnergyBars()
@@ -117,6 +121,16 @@ public class EnergyBar : MonoBehaviour
         }
         
         return false; // No energy available
+    }
+
+    public void ResetEnergy()
+    {
+        InitializeEnergyBars();
+    }
+
+    public void StopEnergyRecharge()
+    {
+        StopAllCoroutines(); // Stop all recharge coroutines
     }
 
 }

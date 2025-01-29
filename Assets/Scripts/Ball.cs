@@ -47,6 +47,17 @@ public class Ball : MonoBehaviour
         }
     }
 
+    // make function if the ball collide with Gate (goals)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DefenderGate"))
+        {
+            Debug.Log("Goal!");
+            // attacker wins
+            GameManager.Instance.OnAttackerWin();
+        }
+    }
+
     public void GetAttackerPosition(Transform attacker)
     {
         // get the attacker's position
