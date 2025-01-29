@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    [SerializeField] private EnergyBar energyBar;
     [SerializeField] private GameObject attackerPrefab;
     [SerializeField] private GameObject defenderPrefab;
     [SerializeField] private LayerMask fieldLayerMask;
@@ -18,9 +19,10 @@ public class Spawner : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && energyBar.CanUseEnergy(isAttacker))
         {
             SpawnSoldierAtClick();
+            energyBar.UseEnergy(isAttacker);
         }
     }
 
