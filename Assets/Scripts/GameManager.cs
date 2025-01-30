@@ -18,8 +18,16 @@ public class GameManager : MonoBehaviour
     public GameObject attackerWinPanel;
     public GameObject defenderWinPanel;
     public GameObject mainMenuPanel;
+    public GameObject gameOverPanel;
+    public TextMeshProUGUI finalScoreText;
+    public TextMeshProUGUI roundText;
+
+    public int roundCount = 0; // there are 5 rounds in total
+    public int playerScore = 0;
+    public int enemyScore = 0;
 
     private Spawner spawner;
+    private SwitchSide switchSide;
 
     private void Awake()
     {
@@ -36,6 +44,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         spawner = GetComponent<Spawner>();
+        switchSide = GetComponent<SwitchSide>();
 
         mainMenuPanel.SetActive(true);
 
@@ -53,6 +62,23 @@ public class GameManager : MonoBehaviour
                 // defender wins if time runs out
                 OnDefenderWin();
             }
+        }
+    }
+
+    public void NextRound()
+    {
+        roundCount++;
+        roundText.text = $"Round {roundCount + 1}/5";
+        if (roundCount >= 5) // if all rounds are finished
+        {
+            roundCount = 0; // reset round count
+            OnGameOver();
+        }
+        else
+        {
+            isAttacker = !isAttacker;
+            switchSide.SwitchPlayerSide();
+            StartCountdownMatch();
         }
     }
 
@@ -97,25 +123,63 @@ public class GameManager : MonoBehaviour
         attackerWinPanel.SetActive(false);
         defenderWinPanel.SetActive(false);
         mainMenuPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
         StartCoroutine(CountdownToMatch());
     }
 
     public void OnAttackerWin()
     {
+        // add player score if player is attacker
+        if (isAttacker)
+        {
+            playerScore++;
+        }
+        else
+        {
+            enemyScore++;
+        }
+
         attackerWinPanel.SetActive(true);
         EndMatch();
     }
 
     public void OnDefenderWin()
     {
+        // add player score if player is defender
+        if (!isAttacker)
+        {
+            playerScore++;
+        }
+        else
+        {
+            enemyScore++;
+        }
+
+        spawner.DestroyBall();
+
         defenderWinPanel.SetActive(true);
         EndMatch();
+    }
+
+    public void OnGameOver()
+    {
+        attackerWinPanel.SetActive(false);
+        defenderWinPanel.SetActive(false);
+
+        finalScoreText.text = $"Player: {playerScore} - Enemy: {enemyScore}";
+        gameOverPanel.SetActive(true);
+
     }
 
     public void OnMainMenu()
     {
         mainMenuPanel.SetActive(true);
         EndMatch();
+    }
+
+    public void ResetRoundCount()
+    {
+        roundCount = 0;
     }
 
     public void QuitGame()

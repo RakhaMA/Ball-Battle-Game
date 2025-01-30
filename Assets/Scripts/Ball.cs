@@ -30,7 +30,7 @@ public class Ball : MonoBehaviour
     private void Update()
     {
         // check if the ball is being held
-        if (isHeld)
+        if (isHeld && attacker != null)
         {
             // move the ball with the attacker
             MoveBallWithAttacker(attacker);

@@ -112,6 +112,16 @@ public class Spawner : MonoBehaviour
         ballScript.RandomizedSpawnBallPosition();
     }
 
+    // Destroy the ball
+    public void DestroyBall()
+    {
+        GameObject ball = GameObject.FindGameObjectWithTag("Ball");
+        if (ball != null)
+        {
+            Destroy(ball);
+        }
+    }
+
     /// <summary>
     /// Returns a random spawn position for enemy defenders.
     /// </summary>
