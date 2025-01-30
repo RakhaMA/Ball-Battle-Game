@@ -34,6 +34,9 @@ public class Spawner : MonoBehaviour
             Vector3 enemySpawnPosition = isPlayerAttacker ? GetRandomDefenderSpawn() : GetRandomAttackerSpawn();
             SpawnSoldierAtPosition(!isPlayerAttacker, enemySpawnPosition);
             energyBar.UseEnergy(!isPlayerAttacker);
+
+            // sfx
+            AudioManager.AudioInstance.PlayButtonSfx();
         }
     }
 
