@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject attackerWinPanel;
     public GameObject defenderWinPanel;
+    public GameObject mainMenuPanel;
 
     private Spawner spawner;
 
@@ -36,7 +37,9 @@ public class GameManager : MonoBehaviour
     {
         spawner = GetComponent<Spawner>();
 
-        StartCoroutine(CountdownToMatch());
+        mainMenuPanel.SetActive(true);
+
+        //StartCoroutine(CountdownToMatch());
     }
 
     private void Update()
@@ -55,21 +58,22 @@ public class GameManager : MonoBehaviour
 
     private void StartMatch()
     {
-        attackerWinPanel.SetActive(false);
-        defenderWinPanel.SetActive(false);
+        spawner.SpawnBall();
         timeRemaining = matchDuration;
         spawner.ResetEnergy();
         spawner.energyBar.StartEnergyRecharge();
 
         isMatchActive = true;
-        spawner.isAttacker = isAttacker;
+        spawner.isPlayerAttacker = isAttacker;
     }
 
     public void EndMatch()
     {
         isMatchActive = false;
         timeRemaining = matchDuration;
-        spawner.ResetEnergy();
+        
+        spawner.energyBar.StopEnergyRecharge();
+        spawner.ClearAllSoldiers();
     }
 
     IEnumerator CountdownToMatch()
@@ -92,6 +96,7 @@ public class GameManager : MonoBehaviour
     {
         attackerWinPanel.SetActive(false);
         defenderWinPanel.SetActive(false);
+        mainMenuPanel.SetActive(false);
         StartCoroutine(CountdownToMatch());
     }
 
@@ -105,5 +110,16 @@ public class GameManager : MonoBehaviour
     {
         defenderWinPanel.SetActive(true);
         EndMatch();
+    }
+
+    public void OnMainMenu()
+    {
+        mainMenuPanel.SetActive(true);
+        EndMatch();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

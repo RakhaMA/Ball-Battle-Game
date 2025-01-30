@@ -11,8 +11,13 @@ public class Attacker : Soldier
 
     public Ball ballScript; // Reference to the Ball object
 
+    private Animator animator;
+
     private void Start()
     {
+        // Get Animator component
+        animator = GetComponent<Animator>();
+
         // Get the ball object
         GameObject ballObject = GameObject.FindGameObjectWithTag("Ball");
         if (ballObject != null)
@@ -22,10 +27,8 @@ public class Attacker : Soldier
         }
 
         // Get the enemy gate object
-        enemyFence = GameObject.FindGameObjectWithTag("DefenderFence").transform; // needs to be changed to the correct tag later (depends on atk/deff)
-
-        // Get the enemy gate object
-        enemyGate = GameObject.FindGameObjectWithTag("DefenderGate").transform; // needs to be changed to the correct tag later (depends on atk/deff)
+        enemyFence = GameObject.FindGameObjectWithTag("DefenderFence").transform;
+        enemyGate = GameObject.FindGameObjectWithTag("DefenderGate").transform;
 
         SpawnTime();
     }
@@ -40,64 +43,75 @@ public class Attacker : Soldier
 
     public override void PerformBehavior()
     {
-        // if no ball in the field, move forward with half the speed
-        if (ball == null)
-        {
-            transform.position += Vector3.left * speed * 0.5f * Time.deltaTime;
-            return;
-        }
+        bool isMoving = false; // Track movement
+        Vector3 moveDirection = Vector3.zero; // Track movement direction
 
-        if (hasBall)
+        // If another attacker has the ball, just move forward
+        if (ballScript.isHeld && ballScript.attacker != transform)
         {
-            // Move towards the enemy gate with half the speed
-            transform.position = Vector3.MoveTowards(transform.position, enemyGate.position, speed * 0.5f * Time.deltaTime);
+            moveDirection = Vector3.left * speed * Time.deltaTime;
+            isMoving = true;
+        }
+        // If no ball in the field, move forward to the enemy gate
+        else if (ball == null)
+        {
+            moveDirection = Vector3.left * speed * Time.deltaTime;
+            isMoving = true;
+        }
+        else if (hasBall) // Holding the ball
+        {
+            moveDirection = (enemyGate.position - transform.position).normalized * speed * 0.5f * Time.deltaTime;
+            isMoving = true;
         }
         else
         {
-            // check if the ball currently not being held
+            // Chase the ball if it's not being held
             if (!ballScript.isHeld)
             {
-                // Chase the ball
-                transform.position = Vector3.MoveTowards(transform.position, ball.position, speed * Time.deltaTime);
+                moveDirection = (ball.position - transform.position).normalized * speed * Time.deltaTime;
+                isMoving = true;
             }
-            else // if the ball is being held
+            else // Move toward the enemy gate
             {
-                // Move towards the enemy gate with half the speed
-                transform.position = Vector3.MoveTowards(transform.position, enemyGate.position, speed * 0.5f * Time.deltaTime);
+                moveDirection = (enemyGate.position - transform.position).normalized * speed * 0.5f * Time.deltaTime;
+                isMoving = true;
             }
         }
 
-        // check if the attacker has get the ball
+        // **Apply movement**
+        transform.position += moveDirection;
+
+        // **Rotate to face movement direction**
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+        }
+
+        // **Set animation state**
+        animator.SetBool("isWalking", isMoving);
+
+        // Check if attacker gets the ball
         if (Vector3.Distance(transform.position, ball.position) < 1.0f)
         {
             hasBall = true;
-            // Logic to "hold" the ball
             ballScript.isHeld = true;
             ballScript.GetAttackerPosition(transform);
         }
     }
 
-    // private void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.CompareTag("Ball") && !hasBall)
-    //     {
-    //         hasBall = true;
-    //         // Logic to "hold" the ball
-    //     }
-    //     else if (other.CompareTag("Defender"))
-    //     {
-    //         if (hasBall)
-    //         {
-    //             // Pass the ball to another active attacker
-    //             PassBallToNearestAttacker();
-    //             Deactivate();
-    //         }
-    //     }
-    // }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DefenderFence") || other.CompareTag("DefenderGate"))
+        {
+            Debug.Log("Attacker has been destroyed!");
+            Destroy(gameObject);
+        }
+    }
 
     public void PassBallToNearestAttacker()
     {
-        // Find the nearest active attacker
         Attacker[] attackers = FindObjectsOfType<Attacker>();
         Attacker nearestAttacker = null;
         float minDistance = float.MaxValue;
@@ -117,13 +131,10 @@ public class Attacker : Soldier
         if (nearestAttacker != null)
         {
             Debug.Log("Passing the ball to the nearest attacker");
-            // Pass the ball to the nearest attacker
             hasBall = false;
             ballScript.isHeld = false;
             ballScript.UpdateAttacker(nearestAttacker.transform);
             ballScript.MoveBallToNearestAttacker(nearestAttacker.transform);
-            
         }
     }
 }
-

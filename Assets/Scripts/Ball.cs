@@ -7,7 +7,7 @@ public class Ball : MonoBehaviour
     [SerializeField] private Collider fieldPlane; // the field area
     [SerializeField] private Transform attackerField; // the field where the ball is spawned
     [SerializeField] private float speed = 1.5f;
-    [SerializeField] private Transform attacker;
+    public Transform attacker;
 
     public bool isHeld = false;
 
@@ -20,6 +20,11 @@ public class Ball : MonoBehaviour
         // get the attacking field
         attackerField = GameObject.FindGameObjectWithTag("AttackerField").transform;
 
+    }
+
+    private void Start()
+    {
+        //RandomizedSpawnBallPosition(); // NO NEED FOR NOW
     }
 
     private void Update()
@@ -43,7 +48,7 @@ public class Ball : MonoBehaviour
         {
             Debug.Log("Ball is out of the field!");
             // respawn the ball
-            SpawnBall();
+            RandomizedSpawnBallPosition();
         }
     }
 
@@ -53,6 +58,7 @@ public class Ball : MonoBehaviour
         if (other.CompareTag("DefenderGate"))
         {
             Debug.Log("Goal!");
+            Destroy(gameObject);
             // attacker wins
             GameManager.Instance.OnAttackerWin();
         }
@@ -112,12 +118,9 @@ public class Ball : MonoBehaviour
         Debug.Log("Ball reached attacker: " + attacker.name);
     }
 
-    private void Start()
-    {
-        SpawnBall();
-    }
+    
 
-    public void SpawnBall()
+    public void RandomizedSpawnBallPosition()
     {
         // set the ball's position random in the attacker's field
         transform.position = new Vector3(Random.Range(attackerField.position.x - 30, attackerField.position.x + 30), attackerField.position.y + 5, Random.Range(attackerField.position.z - 25, attackerField.position.z + 25));
