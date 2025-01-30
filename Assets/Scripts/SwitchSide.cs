@@ -10,7 +10,6 @@ public class SwitchSide : MonoBehaviour
 
     public TextMeshProUGUI playerText;
     public TextMeshProUGUI enemyText;
-    public GameObject fieldArea;
 
     private void Start()
     {

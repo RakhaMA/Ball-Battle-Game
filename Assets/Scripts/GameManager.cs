@@ -186,4 +186,9 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void LoadSceneByIndex(int sceneIndex)
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex);
+    }
 }
